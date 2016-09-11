@@ -15,8 +15,6 @@
  */
 package com.myapps.util
 
-import java.io.FileNotFoundException
-
 import org.scalatest.FunSuite
 
 import scala.io.Source
@@ -25,58 +23,38 @@ class Converter$Test extends FunSuite {
 
   test("all features with values") {
 
-    val  source="src/test/resources/test01.csv"
-    val  dst="src/test/resources/result01.csv"
-
-    val args: Array[String]=Array(source,dst)
-
-    Converter.main(args)
-
-
-    val line=  Source.fromFile(dst).getLines().take(1).mkString
+    val line: String = callMain("src/test/resources/test01.csv","src/test/resources/result01.csv")
     assert("1 1:23 2:-0.5 3:7" == line)
   }
 
 
   test("file contains NAs") {
 
-    val  source="src/test/resources/testNA.csv"
-    val  dst="src/test/resources/resultNA.csv"
-
-    val args: Array[String]=Array(source,dst)
-
-    Converter.main(args)
-
-    val line=  Source.fromFile(dst).getLines().take(1).mkString
+    val line: String = callMain("src/test/resources/testNA.csv","src/test/resources/resultNA.csv")
     assert("0 2:1.2" == line)
   }
 
 
   test("file contains zeros") {
 
-    val  source="src/test/resources/test0s.csv"
-    val  dst="src/test/resources/result0s.csv"
-
-    val args: Array[String]=Array(source,dst)
-
-    Converter.main(args)
-
-    val line=  Source.fromFile(dst).getLines().take(1).mkString
+    val line: String = callMain("src/test/resources/test0s.csv","src/test/resources/result0s.csv")
     assert("1 2:-0.5 3:4" == line)
   }
 
   test("file contains empty values") {
 
-    val  source="src/test/resources/testEmpty.csv"
-    val  dst="src/test/resources/resultEmpty.csv"
-
-    val args: Array[String]=Array(source,dst)
-
-    Converter.main(args)
-
-    val line=  Source.fromFile(dst).getLines().take(1).mkString
+    val line: String = callMain("src/test/resources/testEmpty.csv","src/test/resources/resultEmpty.csv")
     assert("1 1:23 3:7 6:5" == line)
   }
 
 
- }
+  def callMain(origin:String,destination:String): String = {
+
+    val args: Array[String] = Array(origin, destination)
+
+    Converter.main(args)
+
+    val line = Source.fromFile(destination).getLines().take(1).mkString
+    line
+  }
+}

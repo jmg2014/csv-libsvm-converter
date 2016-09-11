@@ -34,17 +34,19 @@ object Converter {
       for (line <- Source.fromFile(filename).getLines().drop(1)) {
 
 
-        val last: String = line.split(",").last
+        val last: Option[String] = line.split(",").lastOption
 
-        //Writing the label
-        writer.write(last)
+        last match {
+          case Some(value) =>  writer.write(value)
+          case None => throw new RuntimeException("The is no values in the file.")
+        }
 
         //Writing all but last one
         line.split(",").init.drop(1).zipWithIndex.foreach {
           case ("0", count) =>
           case ("NA", count) =>
           case ("", count) =>
-          case elem@(_, count) => writer.write(" " + (count + 1) + ":" + elem._1)
+          case elem@(_, count) => writeValues(writer, elem, count)
 
         }
 
@@ -65,4 +67,7 @@ object Converter {
 
   }
 
+  def writeValues(writer: PrintWriter, elem: (String, Int), count: Int): Unit = {
+    writer.write(" " + (count + 1) + ":" + elem._1)
+  }
 }

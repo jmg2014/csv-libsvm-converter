@@ -34,26 +34,21 @@ object Converter {
       for (line <- Source.fromFile(filename).getLines().drop(1)) {
 
 
-        val last: String = line.split(",").last;
+        val last: String = line.split(",").last
 
         //Writing the label
         writer.write(last)
 
         //Writing all but last one
-        line.split(",").init.drop(1).zipWithIndex.foreach { elem =>
-
-          elem match {
-            case ("0", count) =>
-            case ("NA", count) =>
-            case ("", count) =>
-            case (_, count) => writer.write(" " + (count + 1) + ":" + (elem._1))
-
-          }
+        line.split(",").init.drop(1).zipWithIndex.foreach {
+          case ("0", count) =>
+          case ("NA", count) =>
+          case ("", count) =>
+          case elem@(_, count) => writer.write(" " + (count + 1) + ":" + elem._1)
 
         }
 
         writer.write("\n")
-
       }
 
       writer.close()
@@ -65,7 +60,7 @@ object Converter {
     }
 
     val t1 = System.nanoTime()
-    val seconds = (t1 - t0) / 1000000000.0;
+    val seconds = (t1 - t0) / 1000000000.0
     println("Elapsed time: " + seconds + "s")
 
   }

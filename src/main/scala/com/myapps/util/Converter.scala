@@ -16,8 +16,9 @@
 
 package com.myapps.util
 
-import java.io.{File, FileNotFoundException, IOException, PrintWriter}
+import java.io._
 
+import scala.util.{Failure, Success, Try}
 import scala.io.Source
 
 object Converter {
@@ -26,19 +27,33 @@ object Converter {
 
     val t0 = System.nanoTime()
 
-    try {
+    transform(args) match {
+      case Success(_) =>
+        val t1 = System.nanoTime()
+        val seconds = (t1 - t0) / 1000000000.0
+        println("Elapsed time: " + seconds + "s")
+      case Failure(t) =>
+        t match {
+          case t: FileNotFoundException => println("Couldn't find that file.")
+          case t: IOException => println("Had an IOException trying to read that file.")
+          case t: ArrayIndexOutOfBoundsException => println("Not enough arguments.")
+        }
+    }
+  }
+
+  def transform(args: Array[String]): Try[Unit] = {
+    Try({
 
       val filename: String = args(0)
       val writer = new PrintWriter(new File(args(1)))
 
       for (line <- Source.fromFile(filename).getLines().drop(1)) {
 
-
         val last: Option[String] = line.split(",").lastOption
 
         last match {
-          case Some(value) =>  writer.write(value)
-          case None => throw new RuntimeException("The is no values in the file.")
+          case Some(value) => writer.write(value)
+          case None => throw new RuntimeException("There are no values in the file.")
         }
 
         //Writing all but last one
@@ -55,16 +70,7 @@ object Converter {
 
       writer.close()
 
-    } catch {
-      case ex: FileNotFoundException => println("Couldn't find that file.")
-      case ex: IOException => println("Had an IOException trying to read that file.")
-      case ex: ArrayIndexOutOfBoundsException => println("Not enough arguments.")
-    }
-
-    val t1 = System.nanoTime()
-    val seconds = (t1 - t0) / 1000000000.0
-    println("Elapsed time: " + seconds + "s")
-
+    })
   }
 
   def writeValues(writer: PrintWriter, elem: (String, Int), count: Int): Unit = {

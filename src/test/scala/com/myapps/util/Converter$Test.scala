@@ -18,43 +18,68 @@ package com.myapps.util
 import org.scalatest.FunSuite
 
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
 class Converter$Test extends FunSuite {
 
   test("all features with values") {
 
-    val line: String = callMain("src/test/resources/test01.csv","src/test/resources/result01.csv")
+    val line: String = callMain("src/test/resources/test01.csv","src/test/resources/result01.csv") match  {
+      case Success(value) => value
+      case Failure(t) => ""
+    }
     assert("1 1:23 2:-0.5 3:7" == line)
   }
 
 
   test("file contains NAs") {
 
-    val line: String = callMain("src/test/resources/testNA.csv","src/test/resources/resultNA.csv")
+    val line: String = callMain("src/test/resources/testNA.csv","src/test/resources/resultNA.csv") match  {
+      case Success(value) => value
+      case Failure(t) => ""
+    }
     assert("0 2:1.2" == line)
   }
 
 
   test("file contains zeros") {
 
-    val line: String = callMain("src/test/resources/test0s.csv","src/test/resources/result0s.csv")
+    val line: String = callMain("src/test/resources/test0s.csv","src/test/resources/result0s.csv") match  {
+      case Success(value) => value
+      case Failure(t) => ""
+    }
     assert("1 2:-0.5 3:4" == line)
   }
 
   test("file contains empty values") {
 
-    val line: String = callMain("src/test/resources/testEmpty.csv","src/test/resources/resultEmpty.csv")
+    val line: String = callMain("src/test/resources/testEmpty.csv","src/test/resources/resultEmpty.csv") match  {
+      case Success(value) => value
+      case Failure(t) => ""
+    }
     assert("1 1:23 3:7 6:5" == line)
   }
 
+  test("no file URL") {
 
-  def callMain(origin:String,destination:String): String = {
+    val line: String = callMain("","") match  {
+      case Success(value) => value
+      case Failure(t) => ""
+    }
+    assert(line=="")
+  }
 
-    val args: Array[String] = Array(origin, destination)
 
-    Converter.main(args)
+  def callMain(origin:String,destination:String):Try[String] = {
 
-    val line = Source.fromFile(destination).getLines().take(1).mkString
-    line
+    Try({
+
+      val args: Array[String] = Array(origin, destination)
+
+      Converter.main(args)
+
+      val line = Source.fromFile(destination).getLines().take(1).mkString
+      line
+    })
   }
 }

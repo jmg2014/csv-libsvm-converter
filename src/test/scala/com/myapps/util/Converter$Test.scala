@@ -21,9 +21,6 @@ import org.scalatest.FunSuite
 
 import scala.io.Source
 
-/**
-  * Created by koke on 10-Sep-16.
-  */
 class Converter$Test extends FunSuite {
 
   test("all features with values") {
@@ -33,7 +30,7 @@ class Converter$Test extends FunSuite {
 
     val args: Array[String]=Array(source,dst)
 
-    Converter.main(args);
+    Converter.main(args)
 
 
     val line=  Source.fromFile(dst).getLines().take(1).mkString
@@ -48,7 +45,7 @@ class Converter$Test extends FunSuite {
 
     val args: Array[String]=Array(source,dst)
 
-    Converter.main(args);
+    Converter.main(args)
 
     val line=  Source.fromFile(dst).getLines().take(1).mkString
     assert("0 2:1.2" == line)
@@ -62,7 +59,7 @@ class Converter$Test extends FunSuite {
 
     val args: Array[String]=Array(source,dst)
 
-    Converter.main(args);
+    Converter.main(args)
 
     val line=  Source.fromFile(dst).getLines().take(1).mkString
     assert("1 2:-0.5 3:4" == line)
@@ -75,7 +72,7 @@ class Converter$Test extends FunSuite {
 
     val args: Array[String]=Array(source,dst)
 
-    Converter.main(args);
+    Converter.main(args)
 
     val line=  Source.fromFile(dst).getLines().take(1).mkString
     assert("1 1:23 3:7 6:5" == line)
